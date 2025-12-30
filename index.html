@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="la">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCHITECTURA LENTA</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Architectura Lenta.">
+</head>
+<body>
+
+    <header>
+        <h1>ARCHITECTURA LENTA</h1>
+    </header>
+
+    <section class="manifest-section">
+        <p>
+            Architecturam ut ministerium vitae et pignus in posteros creamus.
+            Principiis probatis nitimur eaque cum scientia hodierna coniungimus.
+            Concordiam subtilitatis technicae cum mensura humana quaerimus.
+            Consilia ex peritia oriuntur.
+            Interdum tempus exigit.
+        </p>
+    </section>
+
+    <main class="grid-container" id="lenta-grid"></main>
+
+    <div id="overlay">
+        <div class="close-btn" onclick="closeOverlay()">×</div>
+        <div class="overlay-content" id="overlay-dynamic-content"></div>
+    </div>
+
+    <footer>
+        <p>
+            &copy; 2025 ARCHITECTURA LENTA<br>
+            <span style="font-size: 0.8em; color: #666; letter-spacing: 2px;">OMNIA IURA RESERVATA</span>
+        </p>
+    </footer>
+
+    <script>
+        // DÁTA (3x3 = 9 kariet)
+        const projects = [
+            { id: "08", name: "OCTAVA",    type: "new" },
+            { id: "07", name: "SEPTIMA",   type: "new" },
+            { id: "06", name: "SESTA",     type: "new" },
+            { id: "05", name: "QUINTA",    type: "new" },
+            { id: "04", name: "QUARTA",    type: "new" },
+            { id: "03", name: "TERTIA",    type: "content" },
+            { id: "02", name: "SECUNDA",   type: "content" },
+            { id: "01", name: "PRIMA",     type: "content" },
+            { id: "00", name: "NULLA",     type: "chaos" }
+        ];
+
+        const gridContainer = document.getElementById('lenta-grid');
+        const overlay = document.getElementById('overlay');
+        const overlayContent = document.getElementById('overlay-dynamic-content');
+
+        projects.forEach(project => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // SMART IMAGE: Skúsi SVG, ak zlyhá, dá JPG
+            // Dôležité: class="project-img" pre CSS
+            const smartImage = `
+                <img src="assets/${project.id}/cover.svg" 
+                     onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
+                     alt="${project.name}">
+            `;
+
+            card.innerHTML = `
+                <div class="content">
+                    <div class="layer cover"><span>${project.id}</span></div>
+                    <div class="layer project">
+                        ${smartImage}
+                        <div class="info">${project.name}</div>
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => openProject(project));
+            gridContainer.appendChild(card);
+        });
+
+        // OTVOR OVERLAY
+        async function openProject(project) {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            let html = `<h1>${project.name} <span style="font-size:0.5em; opacity:0.5">(${project.id})</span></h1>`;
+            
+            // Načítaj Text
+            try {
+                const response = await fetch(`assets/${project.id}/text.txt`);
+                if (response.ok) {
+                    const text = await response.text();
+                    html += `<div class="project-text">${text}</div>`;
+                }
+            } catch (e) {}
+
+            // Pridaj obrázok do detailu
+            html += `<img src="assets/${project.id}/cover.svg" 
+                          onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
+                          style="width:100%; border:1px solid #333; margin-top:20px;">`;
+
+            overlayContent.innerHTML = html;
+        }
+
+        function closeOverlay() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeOverlay();
+        });
+    </script>
+
+</body>
+</html>

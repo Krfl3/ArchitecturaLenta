@@ -1,0 +1,175 @@
+/* 1. ZÁKLAD */
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #e0e0e0;
+    --grid-gap: 4px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+}
+
+/* 2. HLAVIČKA */
+header {
+    padding: 80px 20px 40px 20px;
+    text-align: center;
+    letter-spacing: 3px;
+}
+
+h1 {
+    font-weight: normal;
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 2rem;
+    color: #fff;
+}
+
+/* 3. MANIFEST */
+.manifest-section {
+    max-width: 700px;
+    margin: 0 auto 80px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.manifest-section p {
+    font-size: 1rem;
+    color: #888;
+    display: inline-block;
+    text-align: justify;
+}
+
+/* 4. GRID (3x3 PEVNÝ) */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 stĺpce */
+    gap: var(--grid-gap);
+    padding: var(--grid-gap);
+    max-width: 1200px; /* Obmedzená šírka aby to bolo kompaktné */
+    margin: 0 auto 100px auto;
+}
+
+/* Mobil: 1 stĺpec */
+@media (max-width: 768px) {
+    .grid-container { grid-template-columns: 1fr; }
+}
+
+/* 5. KARTA (Toto drží obrázok na uzde) */
+.card {
+    position: relative;
+    aspect-ratio: 1 / 1; /* Vynútený štvorec */
+    background: #111;
+    cursor: pointer;
+    overflow: hidden; /* DÔLEŽITÉ: Odsekne všetko, čo trčí */
+    border: 1px solid #1a1a1a;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* VRSTVY */
+.layer {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    transition: all 0.4s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* VRSTVA 1: Číslo (Je navrchu z-index: 2) */
+.cover {
+    background-color: #0a0a0a;
+    z-index: 2;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+/* VRSTVA 2: Projekt (Je naspodu z-index: 1) */
+.project {
+    z-index: 1;
+    background-color: #151515;
+}
+
+/* DÔLEŽITÉ: Aby sa IMG správal ako background-image */
+.project img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Oreže obrázok na štvorec */
+    display: block;
+    filter: grayscale(100%); /* Čierno-biely v základe */
+    transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+.info {
+    position: absolute;
+    z-index: 3; /* Nad obrázkom */
+    opacity: 0; /* Skryté */
+    background: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border: 1px solid #fff;
+    text-transform: uppercase;
+    pointer-events: none; /* Aby sa dalo kliknúť na kartu */
+}
+
+/* INTERAKCIA (Hover) */
+.card:hover .cover {
+    opacity: 0; /* Číslo zmizne */
+}
+
+.card:hover .project img {
+    filter: grayscale(0%); /* Farba nabehne */
+    transform: scale(1.05); /* Jemný zoom */
+}
+
+.card:hover .info {
+    opacity: 1; /* Text sa ukáže */
+}
+
+/* --- OVERLAY (LIGHTROOM) --- */
+#overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+    overflow-y: auto;
+}
+
+#overlay.active { display: block; opacity: 1; }
+
+.close-btn {
+    position: fixed;
+    top: 30px; right: 40px;
+    font-size: 40px; color: #fff;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.overlay-content {
+    max-width: 900px;
+    margin: 100px auto;
+    padding: 20px;
+    text-align: left;
+}
+
+.project-text {
+    font-size: 1.1rem;
+    color: #ccc;
+    white-space: pre-wrap;
+    margin-bottom: 40px;
+    border-left: 1px solid #444;
+    padding-left: 20px;
+}
