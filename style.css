@@ -1,8 +1,7 @@
-/* 1. ZÁKLAD */
 :root {
     --bg-color: #0a0a0a;
     --text-color: #e0e0e0;
-    --grid-gap: 4px;
+    --max-width: 1200px; /* Jednotná šírka pre všetko */
 }
 
 body {
@@ -10,63 +9,93 @@ body {
     padding: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace; /* Zatiaľ system font */
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* 2. HLAVIČKA */
+/* Obal pre zarovnanie Headeru a Gridu */
+.site-wrapper {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0; /* Žiadny padding, aby sa obrázky dotýkali krajov na mobile */
+}
+
+/* --- HLAVIČKA & MAGICKÝ NÁZOV --- */
 header {
-    padding: 80px 20px 40px 20px;
-    text-align: center;
-    letter-spacing: 3px;
+    padding: 60px 0 20px 0; /* Padding len hore/dole */
+    text-align: left; /* Zarovnanie vľavo ako grid? Alebo center? */
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 2px; /* Jemná korekcia optiky */
 }
 
-h1 {
+.lenta-title {
     font-weight: normal;
     text-transform: uppercase;
     margin: 0;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5vw, 3rem); /* Responzívna veľkosť */
     color: #fff;
-}
-
-/* 3. MANIFEST */
-.manifest-section {
-    max-width: 700px;
-    margin: 0 auto 80px auto;
-    padding: 0 20px;
-    text-align: center;
-}
-
-.manifest-section p {
-    font-size: 1rem;
-    color: #888;
+    cursor: help; /* Zmení kurzor na otáznik */
+    position: relative;
     display: inline-block;
-    text-align: justify;
+    word-spacing: -0.25em; /* Spojí dve slová vizuálne do jedného */
 }
 
-/* 4. GRID (3x3 PEVNÝ) */
+/* Efekt Prekladu */
+.lenta-title span {
+    transition: opacity 0.3s ease;
+}
+
+.lenta-title::after {
+    content: attr(data-translate);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    color: #888; /* Farba prekladu */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    word-spacing: normal; /* Preklad má normálne medzery */
+    pointer-events: none;
+}
+
+/* Hover (PC) a Active (Mobil dotyk) */
+.lenta-title:hover span,
+.lenta-title:active span {
+    opacity: 0; /* Skryje latinu */
+}
+
+.lenta-title:hover::after,
+.lenta-title:active::after {
+    opacity: 1; /* Ukáže slovenčinu */
+}
+
+/* --- MANIFEST --- */
+.manifest-section {
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+/* --- GRID 3x3 (BEZ MEDZER) --- */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 stĺpce */
-    gap: var(--grid-gap);
-    padding: var(--grid-gap);
-    max-width: 1200px; /* Obmedzená šírka aby to bolo kompaktné */
-    margin: 0 auto 100px auto;
+    grid-template-columns: repeat(3, 1fr); /* VŽDY 3 stĺpce */
+    gap: 0; /* Žiadne medzery */
+    width: 100%;
+    margin-bottom: 100px;
 }
 
-/* Mobil: 1 stĺpec */
-@media (max-width: 768px) {
-    .grid-container { grid-template-columns: 1fr; }
-}
-
-/* 5. KARTA (Toto drží obrázok na uzde) */
+/* Karta */
 .card {
     position: relative;
-    aspect-ratio: 1 / 1; /* Vynútený štvorec */
-    background: #111;
+    aspect-ratio: 1 / 1;
+    background: #000;
     cursor: pointer;
-    overflow: hidden; /* DÔLEŽITÉ: Odsekne všetko, čo trčí */
-    border: 1px solid #1a1a1a;
+    overflow: hidden;
+    border: none; /* Žiadny rám */
 }
 
 .content {
@@ -75,101 +104,79 @@ h1 {
     position: relative;
 }
 
-/* VRSTVY */
-.layer {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    transition: all 0.4s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.layer.project {
+    width: 100%;
+    height: 100%;
 }
 
-/* VRSTVA 1: Číslo (Je navrchu z-index: 2) */
-.cover {
-    background-color: #0a0a0a;
-    z-index: 2;
-    font-size: 2.5rem;
-    color: #333;
-}
-
-/* VRSTVA 2: Projekt (Je naspodu z-index: 1) */
-.project {
-    z-index: 1;
-    background-color: #151515;
-}
-
-/* DÔLEŽITÉ: Aby sa IMG správal ako background-image */
 .project img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Oreže obrázok na štvorec */
+    object-fit: cover;
     display: block;
-    filter: grayscale(100%); /* Čierno-biely v základe */
-    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: grayscale(100%) contrast(120%); /* Zvýšený kontrast pre hĺbku */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
 }
 
 .info {
     position: absolute;
-    z-index: 3; /* Nad obrázkom */
-    opacity: 0; /* Skryté */
-    background: #000;
+    bottom: 0; left: 0;
+    width: 100%;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
     color: #fff;
-    padding: 10px 20px;
-    border: 1px solid #fff;
-    text-transform: uppercase;
-    pointer-events: none; /* Aby sa dalo kliknúť na kartu */
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 0.8rem;
+    pointer-events: none;
 }
 
-/* INTERAKCIA (Hover) */
-.card:hover .cover {
-    opacity: 0; /* Číslo zmizne */
-}
-
+/* Hover na karte */
 .card:hover .project img {
-    filter: grayscale(0%); /* Farba nabehne */
-    transform: scale(1.05); /* Jemný zoom */
+    filter: grayscale(0%) contrast(100%);
+    transform: scale(1.02); /* Len veľmi jemný zoom, keďže nemáme medzery */
+    z-index: 10; /* Aby vystúpil nad ostatné */
 }
 
 .card:hover .info {
-    opacity: 1; /* Text sa ukáže */
+    opacity: 1;
 }
 
-/* --- OVERLAY (LIGHTROOM) --- */
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    padding: 50px 0;
+    font-size: 0.8rem;
+    color: #444;
+}
+
+/* --- OVERLAY --- */
 #overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
-    z-index: 1000;
+    background-color: #0a0a0a; /* Plná nepriehľadná farba */
+    z-index: 2000;
     display: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(5px);
+    transition: opacity 0.4s ease;
     overflow-y: auto;
 }
 
 #overlay.active { display: block; opacity: 1; }
 
+.overlay-content {
+    max-width: 800px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
 .close-btn {
     position: fixed;
-    top: 30px; right: 40px;
-    font-size: 40px; color: #fff;
+    top: 20px; right: 20px;
+    font-size: 2rem;
     cursor: pointer;
-    z-index: 1001;
-}
-
-.overlay-content {
-    max-width: 900px;
-    margin: 100px auto;
-    padding: 20px;
-    text-align: left;
-}
-
-.project-text {
-    font-size: 1.1rem;
-    color: #ccc;
-    white-space: pre-wrap;
-    margin-bottom: 40px;
-    border-left: 1px solid #444;
-    padding-left: 20px;
+    color: #fff;
+    z-index: 2001;
+    mix-blend-mode: difference; /* Aby bol krížik vidieť na akomkoľvek pozadí */
 }
