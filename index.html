@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architecturalenta</title>
+    <link rel="canonical" href="https://www.architecturalenta.com/" />
     <link rel="stylesheet" href="style.css">
-    </head>
+    
+    <meta name="description" content="Architectura Lenta - Portfolio of Ing. arch. Karol Filo. Slow architecture, sustainable design, and digital experiments.">
+    <meta name="keywords" content="architecture, slow architecture, Karol Filo, Brno, sustainable design">
+    <meta name="author" content="Ing. arch. Karol Filo">
+</head>
 <body>
 
     <div class="site-wrapper">
@@ -24,6 +29,7 @@
 
         <footer>
             <p>&copy; 2025 ARCHITECTURALENTA</p>
+            <p class="rights">OMNIA IURA RESERVATA</p>
         </footer>
 
     </div>
@@ -34,7 +40,7 @@
     </div>
 
     <script>
-        // DÁTA (Nezmenené)
+        // --- DÁTA PROJEKTOV ---
         const projects = [
             { id: "08", name: "OCTAVA",    type: "new" },
             { id: "07", name: "SEPTIMA",   type: "new" },
@@ -51,13 +57,12 @@
         const overlay = document.getElementById('overlay');
         const overlayContent = document.getElementById('overlay-dynamic-content');
 
+        // Generovanie Gridu
         projects.forEach(project => {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // Odstránil som .layer.cover (čísla), ak chceš čisté obrázky
-            // Ak chceš čísla naspäť, odkomentuj riadok nižšie v innerHTML
-            
+            // Smart Image Logic
             const smartImage = `
                 <img src="assets/${project.id}/cover.svg" 
                      onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
@@ -77,13 +82,14 @@
             gridContainer.appendChild(card);
         });
 
-        // OTVOR OVERLAY
+        // Otvorenie Detailu
         async function openProject(project) {
             overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Zablokuje scrollovanie pozadia
             
-            let html = `<h1>${project.name} <span style="font-size:0.5em; opacity:0.5">(${project.id})</span></h1>`;
+            let html = `<h1>${project.name} <span style="font-size:0.5em; opacity:0.5; font-weight:normal">(${project.id})</span></h1>`;
             
+            // Načítanie textu
             try {
                 const response = await fetch(`assets/${project.id}/text.txt`);
                 if (response.ok) {
@@ -92,9 +98,10 @@
                 }
             } catch (e) {}
 
+            // Obrázok v detaile
             html += `<img src="assets/${project.id}/cover.svg" 
                           onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
-                          style="width:100%; margin-top:20px;">`; // Odstránený border
+                          style="width:100%; margin-top:20px; display:block;">`;
 
             overlayContent.innerHTML = html;
         }
@@ -104,6 +111,7 @@
             document.body.style.overflow = 'auto';
         }
         
+        // Zavretie klávesou ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") closeOverlay();
         });
