@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Architecturalenta</title>
+    <title>architecturalenta</title>
     <link rel="canonical" href="https://www.architecturalenta.com/" />
     <link rel="stylesheet" href="style.css">
     
@@ -16,9 +16,7 @@
     <div class="site-wrapper">
         
         <header>
-            <h1 class="lenta-title" data-translate="POMALÁ ARCHITEKTÚRA">
-                <span>ARCHITECTURA LENTA</span>
-            </h1>
+            <h1 class="lenta-title">ARCHITECTURALENTA</h1>
         </header>
 
         <section class="manifest-section">
@@ -49,7 +47,7 @@
             { id: "04", name: "QUARTA",    type: "new" },
             { id: "03", name: "TERTIA",    type: "content" },
             { id: "02", name: "SECUNDA",   type: "content" },
-            { id: "01", name: "PRIMA",     type: "content" },
+            { id: "01", name: "PRIMA",     type: "content" }, // Toto je zdrojový vizuál
             { id: "00", name: "NULLA",     type: "chaos" }
         ];
 
@@ -57,15 +55,18 @@
         const overlay = document.getElementById('overlay');
         const overlayContent = document.getElementById('overlay-dynamic-content');
 
+        // DOČASNÁ KONFIGURÁCIA: Vynútiť vizuál z projektu "01" (PRIMA)
+        const FORCE_VISUAL_ID = "01"; 
+
         // Generovanie Gridu
         projects.forEach(project => {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // Smart Image Logic
+            // POUŽÍVAME FORCE_VISUAL_ID namiesto project.id pre obrázky
             const smartImage = `
-                <img src="assets/${project.id}/cover.svg" 
-                     onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
+                <img src="assets/${FORCE_VISUAL_ID}/cover.svg" 
+                     onerror="this.onerror=null; this.src='assets/${FORCE_VISUAL_ID}/cover.jpg';" 
                      alt="${project.name}">
             `;
 
@@ -85,11 +86,11 @@
         // Otvorenie Detailu
         async function openProject(project) {
             overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Zablokuje scrollovanie pozadia
+            document.body.style.overflow = 'hidden'; 
             
             let html = `<h1>${project.name} <span style="font-size:0.5em; opacity:0.5; font-weight:normal">(${project.id})</span></h1>`;
             
-            // Načítanie textu
+            // Text načítame stále zo správneho priečinka projektu (ak existuje)
             try {
                 const response = await fetch(`assets/${project.id}/text.txt`);
                 if (response.ok) {
@@ -98,9 +99,9 @@
                 }
             } catch (e) {}
 
-            // Obrázok v detaile
-            html += `<img src="assets/${project.id}/cover.svg" 
-                          onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
+            // Ale obrázok v detaile dáme tiež natvrdo z PRIMA (01), aby sme neukázali nič tajné
+            html += `<img src="assets/${FORCE_VISUAL_ID}/cover.svg" 
+                          onerror="this.onerror=null; this.src='assets/${FORCE_VISUAL_ID}/cover.jpg';" 
                           style="width:100%; margin-top:20px; display:block;">`;
 
             overlayContent.innerHTML = html;
@@ -111,7 +112,6 @@
             document.body.style.overflow = 'auto';
         }
         
-        // Zavretie klávesou ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") closeOverlay();
         });
