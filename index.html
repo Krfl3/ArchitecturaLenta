@@ -3,42 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Architectura Lenta</title>
-    <link rel="canonical" href="https://www.architecturalenta.com/" />
+    <title>Architecturalenta</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="description" content="Architectura Lenta.">
-    <meta name="description" content="Architectura Lenta - Portfolio of Ing. arch. Karol Filo. Slow architecture, sustainable design, and digital experiments.">
-    <meta name="keywords" content="architecture, slow architecture, Karol Filo, Brno, sustainable design">
-    <meta name="author" content="Ing. arch. Karol Filo">
-</head>
+    </head>
 <body>
 
-    <header>
-        <h1>ARCHITECTURA LENTA</h1>
-    </header>
+    <div class="site-wrapper">
+        
+        <header>
+            <h1 class="lenta-title" data-translate="POMALÁ ARCHITEKTÚRA">
+                <span>ARCHITECTURA LENTA</span>
+            </h1>
+        </header>
 
-    <section class="manifest-section">
-        <p>
-            CHAO . LENTA . ORDO
-        </p>
-    </section>
+        <section class="manifest-section">
+            <p>CHAO . LENTA . ORDO</p>
+        </section>
 
-    <main class="grid-container" id="lenta-grid"></main>
+        <main class="grid-container" id="lenta-grid"></main>
+
+        <footer>
+            <p>&copy; 2025 ARCHITECTURALENTA</p>
+        </footer>
+
+    </div>
 
     <div id="overlay">
         <div class="close-btn" onclick="closeOverlay()">×</div>
         <div class="overlay-content" id="overlay-dynamic-content"></div>
     </div>
 
-    <footer>
-        <p>
-            &copy; 2025 ARCHITECTURA LENTA<br>
-            <span style="font-size: 0.8em; color: #666; letter-spacing: 2px;">OMNIA IURA RESERVATA</span>
-        </p>
-    </footer>
-
     <script>
-        // DÁTA (3x3 = 9 kariet)
+        // DÁTA (Nezmenené)
         const projects = [
             { id: "08", name: "OCTAVA",    type: "new" },
             { id: "07", name: "SEPTIMA",   type: "new" },
@@ -59,8 +55,9 @@
             const card = document.createElement('div');
             card.className = 'card';
             
-            // SMART IMAGE: Skúsi SVG, ak zlyhá, dá JPG
-            // Dôležité: class="project-img" pre CSS
+            // Odstránil som .layer.cover (čísla), ak chceš čisté obrázky
+            // Ak chceš čísla naspäť, odkomentuj riadok nižšie v innerHTML
+            
             const smartImage = `
                 <img src="assets/${project.id}/cover.svg" 
                      onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
@@ -69,7 +66,6 @@
 
             card.innerHTML = `
                 <div class="content">
-                    <div class="layer cover"><span>${project.id}</span></div>
                     <div class="layer project">
                         ${smartImage}
                         <div class="info">${project.name}</div>
@@ -88,7 +84,6 @@
             
             let html = `<h1>${project.name} <span style="font-size:0.5em; opacity:0.5">(${project.id})</span></h1>`;
             
-            // Načítaj Text
             try {
                 const response = await fetch(`assets/${project.id}/text.txt`);
                 if (response.ok) {
@@ -97,10 +92,9 @@
                 }
             } catch (e) {}
 
-            // Pridaj obrázok do detailu
             html += `<img src="assets/${project.id}/cover.svg" 
                           onerror="this.onerror=null; this.src='assets/${project.id}/cover.jpg';" 
-                          style="width:100%; border:1px solid #333; margin-top:20px;">`;
+                          style="width:100%; margin-top:20px;">`; // Odstránený border
 
             overlayContent.innerHTML = html;
         }
@@ -114,9 +108,5 @@
             if (e.key === "Escape") closeOverlay();
         });
     </script>
-
 </body>
-
 </html>
-
-
