@@ -1,7 +1,9 @@
+/* --- 1. ZÁKLAD & TYPOGRAFIA (SYSTEM BRUTALISM) --- */
 :root {
     --bg-color: #0a0a0a;
     --text-color: #e0e0e0;
-    --max-width: 1200px; /* Jednotná šírka pre všetko */
+    --accent-color: #fff;
+    --max-width: 1200px; /* Maximálna šírka webu */
 }
 
 body {
@@ -9,37 +11,48 @@ body {
     padding: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Courier New', Courier, monospace; /* Zatiaľ system font */
-    line-height: 1.6;
-    overflow-x: hidden;
+    
+    /* SYSTEM SANS STACK - Moderná, čistá, rýchla typografia */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    
+    /* Vyhladzovanie písma pre tmavé pozadie */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: hidden; /* Zabraňuje horizontálnemu scrolovaniu */
 }
 
-/* Obal pre zarovnanie Headeru a Gridu */
+/* Obal pre zarovnanie celého obsahu */
 .site-wrapper {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0; /* Žiadny padding, aby sa obrázky dotýkali krajov na mobile */
+    padding: 0;
+    width: 100%;
 }
 
-/* --- HLAVIČKA & MAGICKÝ NÁZOV --- */
+/* --- 2. HLAVIČKA & NÁZOV --- */
 header {
-    padding: 60px 0 20px 0; /* Padding len hore/dole */
-    text-align: left; /* Zarovnanie vľavo ako grid? Alebo center? */
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 2px; /* Jemná korekcia optiky */
+    padding: 80px 20px 40px 20px; /* Padding po stranách aby sa text nelepil na okraj monitora */
+    text-align: left;
 }
 
 .lenta-title {
-    font-weight: normal;
+    font-weight: 800; /* Extra tučné pre brutalistický efekt */
     text-transform: uppercase;
     margin: 0;
-    font-size: clamp(1.5rem, 5vw, 3rem); /* Responzívna veľkosť */
-    color: #fff;
+    /* Responzívna veľkosť: min 1.5rem, max 4rem, inak podľa šírky okna */
+    font-size: clamp(1.8rem, 7vw, 4.5rem); 
+    color: var(--accent-color);
     cursor: help; /* Zmení kurzor na otáznik */
     position: relative;
     display: inline-block;
-    word-spacing: -0.25em; /* Spojí dve slová vizuálne do jedného */
+    
+    /* MAGICKÉ ZLIEVANIE SLOV */
+    word-spacing: -0.32em; /* Pritiahne slová k sebe */
+    letter-spacing: -0.04em; /* Pritiahne písmená k sebe */
+    line-height: 1;
 }
 
 /* Efekt Prekladu */
@@ -52,14 +65,18 @@ header {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    color: #888; /* Farba prekladu */
+    color: #666; /* Tmavšia farba prekladu */
     opacity: 0;
     transition: opacity 0.3s ease;
-    word-spacing: normal; /* Preklad má normálne medzery */
+    
+    /* Resetovanie nastavení pre preklad, aby bol čitateľný */
+    word-spacing: normal; 
+    letter-spacing: normal;
+    font-weight: 400; /* Tenšie písmo pre preklad */
     pointer-events: none;
 }
 
-/* Hover (PC) a Active (Mobil dotyk) */
+/* Interakcia: Hover (PC) a Active (Mobil dotyk) */
 .lenta-title:hover span,
 .lenta-title:active span {
     opacity: 0; /* Skryje latinu */
@@ -67,19 +84,21 @@ header {
 
 .lenta-title:hover::after,
 .lenta-title:active::after {
-    opacity: 1; /* Ukáže slovenčinu */
+    opacity: 1; /* Ukáže preklad */
 }
 
-/* --- MANIFEST --- */
+/* --- 3. MANIFEST --- */
 .manifest-section {
-    text-align: center;
-    margin-bottom: 40px;
-    letter-spacing: 2px;
-    font-size: 0.8rem;
-    color: #555;
+    text-align: left;
+    padding: 0 20px;
+    margin-bottom: 60px;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+    letter-spacing: 0.05em;
 }
 
-/* --- GRID 3x3 (BEZ MEDZER) --- */
+/* --- 4. GRID (DLAŽDICE) --- */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* VŽDY 3 stĺpce */
@@ -88,25 +107,27 @@ header {
     margin-bottom: 100px;
 }
 
+/* Aj na mobile ostanú 3 stĺpce, ako si žiadal */
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 /* Karta */
 .card {
     position: relative;
-    aspect-ratio: 1 / 1;
-    background: #000;
+    aspect-ratio: 1 / 1; /* Štvorec */
+    background: #0a0a0a;
     cursor: pointer;
     overflow: hidden;
-    border: none; /* Žiadny rám */
+    /* Žiadny border */
 }
 
-.content {
+.content, .layer.project {
     width: 100%;
     height: 100%;
     position: relative;
-}
-
-.layer.project {
-    width: 100%;
-    height: 100%;
 }
 
 .project img {
@@ -114,69 +135,95 @@ header {
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: grayscale(100%) contrast(120%); /* Zvýšený kontrast pre hĺbku */
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    filter: grayscale(100%) contrast(110%);
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
 }
 
+/* Text názvu projektu na karte */
 .info {
     position: absolute;
     bottom: 0; left: 0;
     width: 100%;
-    padding: 10px;
-    background: rgba(0,0,0,0.8);
+    padding: 5px;
+    background: rgba(0,0,0,0.7); /* Polopriehľadné pozadie */
     color: #fff;
     text-align: center;
-    opacity: 0;
+    opacity: 0; /* Skryté */
     transition: opacity 0.3s ease;
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* Menšie písmo aby sa zmestilo */
+    text-transform: uppercase;
+    font-weight: 600;
     pointer-events: none;
 }
 
 /* Hover na karte */
 .card:hover .project img {
     filter: grayscale(0%) contrast(100%);
-    transform: scale(1.02); /* Len veľmi jemný zoom, keďže nemáme medzery */
-    z-index: 10; /* Aby vystúpil nad ostatné */
+    /* Jemný zoom pre efekt hĺbky */
+    transform: scale(1.03); 
+    z-index: 10;
 }
 
 .card:hover .info {
     opacity: 1;
 }
 
-/* --- FOOTER --- */
+/* --- 5. FOOTER --- */
 footer {
-    text-align: center;
-    padding: 50px 0;
-    font-size: 0.8rem;
+    text-align: left;
+    padding: 40px 20px;
+    font-size: 0.75rem;
     color: #444;
+    border-top: 1px solid #1a1a1a;
 }
 
-/* --- OVERLAY --- */
+.rights {
+    margin-top: 5px;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+}
+
+/* --- 6. OVERLAY (DETAIL) --- */
 #overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #0a0a0a; /* Plná nepriehľadná farba */
+    background-color: #0a0a0a;
     z-index: 2000;
     display: none;
     opacity: 0;
-    transition: opacity 0.4s ease;
-    overflow-y: auto;
+    transition: opacity 0.3s ease;
+    overflow-y: auto; /* Povoliť scrollovanie vnútri detailu */
 }
 
 #overlay.active { display: block; opacity: 1; }
 
 .overlay-content {
     max-width: 800px;
-    margin: 80px auto;
+    margin: 80px auto; /* Odsadenie zhora pre krížik */
     padding: 20px;
 }
 
 .close-btn {
     position: fixed;
     top: 20px; right: 20px;
-    font-size: 2rem;
+    font-size: 2.5rem;
+    line-height: 1;
     cursor: pointer;
     color: #fff;
     z-index: 2001;
-    mix-blend-mode: difference; /* Aby bol krížik vidieť na akomkoľvek pozadí */
+    mix-blend-mode: difference; /* Aby bol viditeľný vždy */
+    transition: transform 0.2s;
+}
+
+.close-btn:hover {
+    transform: scale(1.1);
+}
+
+.project-text {
+    font-size: 1rem;
+    color: #ccc;
+    white-space: pre-wrap;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    max-width: 600px;
 }
